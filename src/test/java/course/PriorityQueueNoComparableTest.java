@@ -1,15 +1,15 @@
 package course;
 
 import org.junit.jupiter.api.Test;
-import ru.clevertec.course.CustomPriorityQueue;
-import ru.clevertec.course.CustomQueue;
+import ru.clevertec.course.PriorityQueue;
+import ru.clevertec.course.Queue;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CustomPriorityQueueNoComparableTest {
+public class PriorityQueueNoComparableTest {
     @Test
     void add_noComparable() {
-        CustomQueue<Object> queue = new CustomPriorityQueue<>();
+        Queue<Object> queue = new PriorityQueue<>();
 
         assertThrows(ClassCastException.class, ()-> queue.add(new Object()));
     }

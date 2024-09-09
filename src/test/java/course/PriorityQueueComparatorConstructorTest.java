@@ -2,8 +2,8 @@ package course;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.clevertec.course.CustomPriorityQueue;
-import ru.clevertec.course.CustomQueue;
+import ru.clevertec.course.PriorityQueue;
+import ru.clevertec.course.Queue;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -11,12 +11,12 @@ import java.util.Comparator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CustomPriorityQueueComparatorConstructorTest {
-    private CustomQueue<Integer> queue;
+public class PriorityQueueComparatorConstructorTest {
+    private Queue<Integer> queue;
 
     @BeforeEach
     void init() {
-        queue = new CustomPriorityQueue<>(Comparator.reverseOrder());
+        queue = new PriorityQueue<>(Comparator.reverseOrder());
     }
 
     @Test
@@ -68,7 +68,7 @@ public class CustomPriorityQueueComparatorConstructorTest {
 
         queue.poll();
 
-        assertEquals(queue.toString(), Arrays.toString(new Integer[]{6, 3, 2, 3, 2, 1, null, null}));
+        assertEquals(queue.toString(), Arrays.toString(new Integer[]{6, 3, 2, 2, 3, 1, null, null}));
     }
 
 

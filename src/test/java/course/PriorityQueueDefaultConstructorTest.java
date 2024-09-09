@@ -2,21 +2,21 @@ package course;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.clevertec.course.CustomPriorityQueue;
-import ru.clevertec.course.CustomQueue;
+import ru.clevertec.course.PriorityQueue;
+import ru.clevertec.course.Queue;
 
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class CustomPriorityQueueDefaultConstructorTest {
+class PriorityQueueDefaultConstructorTest {
 
-    private CustomQueue<Integer> queue;
+    private Queue<Integer> queue;
 
     @BeforeEach
     void init() {
-        queue = new CustomPriorityQueue<>();
+        queue = new PriorityQueue<>();
     }
 
     @Test

@@ -3,7 +3,7 @@ package ru.clevertec.course;
 import java.util.Arrays;
 import java.util.Comparator;
 
-public class CustomPriorityQueue<E> implements CustomQueue<E> {
+public class PriorityQueue<E> implements Queue<E> {
 
     private final static int DEFAULT_INIT_CAPACITY = 8;
     private final Comparator<? super E> comparator;
@@ -11,16 +11,13 @@ public class CustomPriorityQueue<E> implements CustomQueue<E> {
     private int size;
 
     @SuppressWarnings("unchecked")
-    public CustomPriorityQueue() {
-        this((o1, o2) -> {
-            Comparable<E> comparable = (Comparable<E>) o1;
-            return comparable.compareTo(o2);
-        });
+    public PriorityQueue() {
+        this((Comparator<? super E>) Comparator.naturalOrder());
 
     }
 
     @SuppressWarnings("unchecked")
-    public CustomPriorityQueue(Comparator<? super E> comparator) {
+    public PriorityQueue(Comparator<? super E> comparator) {
         this.comparator = comparator;
         this.queue = (E[]) new Object[DEFAULT_INIT_CAPACITY];
         this.size = 0;
@@ -44,8 +41,10 @@ public class CustomPriorityQueue<E> implements CustomQueue<E> {
     @Override
     public E poll() {
         E result = queue[0];
-        remove();
-        siftDown();
+        if (size > 0) {
+            removeLast();
+            siftDown();
+        }
         return result;
     }
 
@@ -69,67 +68,68 @@ public class CustomPriorityQueue<E> implements CustomQueue<E> {
     }
 
     private void increaseArray() {
-        int newCapacity = size == 8 ? 15 : size * 2 + 1;
+        int newCapacity = size * 2;
         queue = Arrays.copyOf(queue, newCapacity);
     }
 
     private void siftUp() {
         int childIndex = size - 1;
         int parentIndex = getParentIndex(childIndex);
-        while (compareCondition(childIndex, parentIndex)) {
+        while (compareElements(childIndex, parentIndex) < 0) {
             swapElements(childIndex, parentIndex);
             childIndex = parentIndex;
             parentIndex = getParentIndex(childIndex);
         }
     }
 
-    private int getParentIndex(int childIndex){
-        return (childIndex - 1) / 2;
-    }
 
-    private void remove() {
-        if (size > 0) {
-            int lastElement = size - 1;
-            queue[0] = queue[lastElement];
-            queue[lastElement] = null;
-            size--;
-        }
+    private void removeLast() {
+        int lastElement = size - 1;
+        queue[0] = queue[lastElement];
+        queue[lastElement] = null;
+        size--;
     }
 
     private void siftDown() {
-        if (size > 0) {
-            int parentIndex = 0;
-            int childIndex = getChildIndex(parentIndex);
-            while (compareCondition(childIndex, parentIndex)) {
-                swapElements(childIndex, parentIndex);
-                parentIndex = childIndex;
-                childIndex = getChildIndex(parentIndex);
+        int parentIndex = 0;
+        int left = getLeftChild(parentIndex);
+
+        while (left < size) {
+            int right = getRightChild(parentIndex);
+
+            int minChildIndex = left;
+            if (right < size && compareElements(right, left) < 0) {
+                minChildIndex = right;
             }
+
+            if (compareElements(parentIndex, minChildIndex) < 0) {
+                break;
+            }
+
+            swapElements(minChildIndex, parentIndex);
+            parentIndex = minChildIndex;
+            left = getLeftChild(parentIndex);
         }
     }
 
-    private int getChildIndex(int parentIndex) {
-        int left = parentIndex * 2 + 1;
-        if (left >= size) {
-            return parentIndex;
-        }
-
-        int right = left + 1;
-        if (right >= size) {
-            return left;
-        }
-
-        if (compareCondition(left, right)) {
-            return left;
-        }
-
-        return right;
+    private int getParentIndex(int childIndex) {
+        return (childIndex - 1) / 2;
     }
 
-
-    private boolean compareCondition(int comparableIndex, int index) {
-        return comparator.compare(queue[comparableIndex], queue[index]) < 0;
+    private int getLeftChild(int parentIndex) {
+        return parentIndex * 2 + 1;
     }
+
+    private int getRightChild(int parentIndex) {
+        return parentIndex * 2 + 2;
+    }
+
+    private int compareElements(int index, int comparableIndex) {
+        E element = queue[index];
+        E comparableElement = queue[comparableIndex];
+        return comparator.compare(element, comparableElement);
+    }
+
 
     private void swapElements(int index, int swapIndex) {
         E buffer = queue[index];
